@@ -1,10 +1,20 @@
 package segmentedfilesystem;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.*;
+
 public class FileRetriever {
+
+	String server;
+	int portNumber;
 
 	public FileRetriever(String server, int port) {
         // Save the server and port for use in `downloadFiles()`
         //...
+		this.server = server;
+		this.portNumber = port;
 	}
 
 	public void downloadFiles() {
@@ -20,6 +30,29 @@ public class FileRetriever {
         // PacketManager.allPacketsReceived() that you could
         // call for that, but there are a bunch of possible
         // ways.
+		try {
+			InetAddress address = InetAddress.getByName(server);
+			DatagramSocket datagramSocket = new DatagramSocket(portNumber, address);
+
+			byte[] buf = new byte[1028];
+
+			// create and send empty packet to initiate exchange
+			DatagramPacket packet = new DatagramPacket(buf, buf.length, address, portNumber);
+			datagramSocket.send(packet);
+
+
+			while()
+			{
+
+			}
+
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
