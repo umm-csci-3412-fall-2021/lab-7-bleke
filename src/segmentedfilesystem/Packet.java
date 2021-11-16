@@ -2,22 +2,32 @@ package segmentedfilesystem;
 
 public class Packet
 {
-    int fileID;
-    int status;
+    byte[] data;
+    boolean isHeader;
+    byte fileID;
+    int packetLength;
 
-    public void Packet(int fileID, int status)
-    {
-        this.fileID = fileID;
-        this.status = status;
+    public void Packet(byte[] data, int packetLength) {
+        this.data = data;
+        this.packetLength = packetLength;
     }
 
-    public int getFileID()
+    public byte getFileID()
     {
-        return this.fileID;
+        fileID = data[1];
+        return fileID;
     }
 
-    public int getStatus()
+    public boolean getStatus() {
+        if (data[0] % 2 == 0)
+            isHeader = true;
+        else
+            isHeader = false;
+        return isHeader;
+    }
+
+    public int getPacketLength()
     {
-        return this.status;
+        return packetLength;
     }
 }

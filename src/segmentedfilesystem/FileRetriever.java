@@ -1,5 +1,6 @@
 package segmentedfilesystem;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,6 +19,7 @@ public class FileRetriever {
 	}
 
 	public void downloadFiles() {
+		int i;
         // Do all the heavy lifting here.
         // This should
         //   * Connect to the server
@@ -40,9 +42,17 @@ public class FileRetriever {
 			DatagramPacket packet = new DatagramPacket(buf, buf.length, address, portNumber);
 			datagramSocket.send(packet);
 
+			packet = new DatagramPacket(buf, buf.length);
 
-			while()
+			while(true)
 			{
+				datagramSocket.receive(packet);
+
+				DatagramPacket incomingPacket = packet;
+
+
+				// check to see if the new packet is a header or data packet
+				// ... do the stuff to create a data or header packet ...
 
 			}
 
@@ -54,5 +64,7 @@ public class FileRetriever {
 			e.printStackTrace();
 		}
 	}
+
+
 
 }

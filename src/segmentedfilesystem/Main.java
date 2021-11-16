@@ -21,5 +21,5 @@ public class Main {
         FileRetriever fileRetriever = new FileRetriever(server, port);
         fileRetriever.downloadFiles();
     }
-
+    //  Downloading all three files should take ~1 minute.
 }

@@ -2,16 +2,15 @@ package segmentedfilesystem;
 
 public class HeaderPacket extends Packet
 {
-    int fileName;
+    byte[] fileName;
 
-    public void HeaderPacket(int fileID, int status, int fileName)
+    public void HeaderPacket(byte fileID, byte[] fileName)
     {
         this.fileID = fileID;
-        this.status = status;
         this.fileName = fileName;
     }
 
-    public int getFileName()
+    public byte[] getFileName()
     {
         return fileName;
     }
