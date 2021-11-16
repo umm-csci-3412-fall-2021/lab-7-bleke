@@ -4,10 +4,16 @@ import java.util.SortedMap;
 
 public class ReceivedFile
 {
-    byte fileID;
+    int fileID;
+    // use arraylist?
 
     public void ReceivedFile()
     {
 
+    }
+
+    public int getFileID()
+    {
+        return fileID;
     }
 }

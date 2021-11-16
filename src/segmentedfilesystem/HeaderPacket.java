@@ -1,18 +1,18 @@
 package segmentedfilesystem;
 
+import java.util.Arrays;
+
 public class HeaderPacket extends Packet
 {
-    byte[] fileName;
 
-    public void HeaderPacket(byte fileID, byte[] fileName)
-    {
-        this.fileID = fileID;
-        this.fileName = fileName;
+    public HeaderPacket(byte[] data, int packetLength) {
+        super(data, packetLength);
     }
+
+    byte[] fileName = Arrays.copyOfRange(data, 2, packetLength);
 
     public byte[] getFileName()
     {
         return fileName;
     }
-
 }

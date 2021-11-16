@@ -7,7 +7,8 @@ public class Packet
     byte fileID;
     int packetLength;
 
-    public void Packet(byte[] data, int packetLength) {
+    // Constructor
+    public Packet(byte[] data, int packetLength) {
         this.data = data;
         this.packetLength = packetLength;
     }

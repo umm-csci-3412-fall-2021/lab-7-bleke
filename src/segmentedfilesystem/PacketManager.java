@@ -7,28 +7,27 @@ import java.net.DatagramPacket;
  */
 public class PacketManager
 {
-    byte[] data;
-    int packetLength;
+    Packet newPacket;
 
     // Constructor
     public void PacketManager(DatagramPacket packet)
     {
-        this.data = packet.getData();
-        this.packetLength = packet.getLength();
+        this.newPacket = new Packet(packet.getData(), packet.getLength());
     }
 
-    // Checks to see if a packet is a header or not
-    public boolean isHeader()
+    public void sendPacketToFile()
     {
-        if ((data[0] % 2) == 1)
-            return false;
+        if(newPacket.getStatus()) // if the packet is a header packet
+        {
+            HeaderPacket headerPacket = new HeaderPacket(newPacket.data, newPacket.packetLength);
+        }
         else
-            return true;
-    }
+        {
+            DataPacket dataPacket = new DataPacket(newPacket.data, newPacket.packetLength);
+        }
 
-    public int getPacketLength()
-    {
-        return packetLength;
+
+
     }
 
 }

@@ -7,7 +7,11 @@ public class DataPacket extends Packet
     int packetNumber;
     boolean isLastPacket;
 
-    public int getPacketNumber()
+    public DataPacket(byte[] data, int packetLength) {
+        super(data, packetLength);
+    }
+
+    public void calculatePacketNumber()
     {
         int x = data[2];  // most significant byte
         int y = data[3];  // least significant byte
@@ -17,7 +21,12 @@ public class DataPacket extends Packet
         if(y < 0)
             y += 256;
 
-        return (256 * x) + y;
+        packetNumber = (256 * x) + y;
+    }
+
+    public int getPacketNumber()
+    {
+        return packetNumber;
     }
 
     public byte[] getData()
