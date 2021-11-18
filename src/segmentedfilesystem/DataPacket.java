@@ -34,15 +34,14 @@ public class DataPacket extends Packet
         return Arrays.copyOfRange(data, 4, packetLength);
     }
 
-    public boolean isLastPacket()
+    public void setLastPacket()
     {
         if(data[0] % 4 == 3)  // might have to use Byte.toUnassignedInt
-        {
             isLastPacket = true;
-            return true;
-        }
-        else
-            return false;
     }
 
+    public boolean isLastPacket()
+    {
+        return isLastPacket;
+    }
 }

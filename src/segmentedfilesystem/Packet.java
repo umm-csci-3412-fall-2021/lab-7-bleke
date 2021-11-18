@@ -19,16 +19,18 @@ public class Packet
         return fileID;
     }
 
-    public boolean getStatus() {
-        if (data[0] % 2 == 0)
-            isHeader = true;
-        else
-            isHeader = false;
+    public boolean isHeader()
+    {
         return isHeader;
     }
-
+    
     public int getPacketLength()
     {
         return packetLength;
+    }
+
+    public byte[] getData()
+    {
+        return data;
     }
 }

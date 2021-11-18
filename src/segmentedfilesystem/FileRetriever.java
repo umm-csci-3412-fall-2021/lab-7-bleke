@@ -44,16 +44,14 @@ public class FileRetriever {
 
 			packet = new DatagramPacket(buf, buf.length);
 
-			while(true)
+			while(true)  // need to change to stop when we receive all of the packets.
 			{
 				datagramSocket.receive(packet);
 
-				DatagramPacket incomingPacket = packet;
+				PacketManager newPacket = new PacketManager(packet);
 
-
-				// check to see if the new packet is a header or data packet
-				// ... do the stuff to create a data or header packet ...
-
+				newPacket.setStatus();
+				newPacket.createPacket();
 			}
 
 		} catch (SocketException e) {
