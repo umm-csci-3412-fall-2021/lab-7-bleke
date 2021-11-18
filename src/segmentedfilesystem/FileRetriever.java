@@ -19,7 +19,6 @@ public class FileRetriever {
 	}
 
 	public void downloadFiles() {
-		int i;
         // Do all the heavy lifting here.
         // This should
         //   * Connect to the server

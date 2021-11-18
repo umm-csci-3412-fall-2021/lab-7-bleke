@@ -1,19 +1,19 @@
 package segmentedfilesystem;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class ReceivedFile
 {
     int fileID;
+    byte[] filename;
     int numberOfPackets;
-    ArrayList<Packet> file;
+    TreeMap<Integer, byte[]> file;
 
     public void ReceivedFile(int fileID)
     {
         this.fileID = fileID;
-        file = new ArrayList<Packet>();
+        file = new TreeMap<Integer, byte[]>();
     }
 
     public int getFileID()
@@ -21,9 +21,9 @@ public class ReceivedFile
         return fileID;
     }
 
-    public void addPacket(Packet p)
+    public void addPacket(DataPacket p)
     {
-        file.add(p);
+        file.put(p.getPacketNumber(), p.getRestOfData());
     }
 
     public void setNumberOfPackets(int numberOfPackets)
@@ -31,6 +31,14 @@ public class ReceivedFile
         this.numberOfPackets = numberOfPackets;
     }
 
+    public boolean isComplete()
+    {
+        return file.size() == numberOfPackets;
+    }
 
+    public void setFileName(byte[] filename)
+    {
+        this.filename = filename;
+    }
 
 }

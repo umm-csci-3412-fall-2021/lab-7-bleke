@@ -30,7 +30,7 @@ public class PacketManager
         if(newPacket.isHeader())
         {
             HeaderPacket headerPacket = new HeaderPacket(newPacket.getData(), newPacket.getPacketLength());
-            sendPacketToFile(headerPacket);
+            setReceivedFileName(headerPacket);
         }
         else
         {
@@ -40,27 +40,30 @@ public class PacketManager
         }
     }
 
-    public static void sendPacketToFile(Packet p)
+    public static void setReceivedFileName(HeaderPacket p)
     {
         int fileID = p.getFileID();
         for(int i = 0; i < receivedFiles.size(); i++)
         {
             ReceivedFile file = receivedFiles.get(i);
-            if(file.fileID == fileID)
+            if(file.getFileID() == fileID)
                 // check to see if there's already a RecievedFile object with a
                 // given fileID, if there is, add the new packet to that file
             {
-                file.addPacket(p);
+                file.setFileName(p.getFileName());
             }
             else
                 // if there is not an existing RecievedFile object with a given fileID,
                 // then create a new one.
             {
                 ReceivedFile newFile = new ReceivedFile();
+                newFile.setFileName(p.getFileName());
                 receivedFiles.add(newFile);
             }
         }
     }
+
+
 
     public static void sendPacketToFile(DataPacket p)
     {
@@ -74,7 +77,7 @@ public class PacketManager
             {
                 if(p.isLastPacket)
                 {
-                    file.setNumberOfPackets(p.getPacketNumber() + 1);
+                    file.setNumberOfPackets(p.getPacketNumber());
                     // if the datapacket is the last packet, we set the numberOfPackets in the ReceivedFile
                     // as it's packet number
                 }

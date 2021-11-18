@@ -6,6 +6,7 @@ public class DataPacket extends Packet
 {
     int packetNumber;
     boolean isLastPacket;
+    byte[] restOfData;  // bytes that are not the status, fileID, or packetNumber
 
     public DataPacket(byte[] data, int packetLength) {
         super(data, packetLength);
@@ -29,10 +30,12 @@ public class DataPacket extends Packet
         return packetNumber;
     }
 
-    public byte[] getData()
+    public void setRestOfData()
     {
-        return Arrays.copyOfRange(data, 4, packetLength);
+        restOfData = Arrays.copyOfRange(data, 4, packetLength);
     }
+
+    public byte[] getRestOfData() { return restOfData;}
 
     public void setLastPacket()
     {
