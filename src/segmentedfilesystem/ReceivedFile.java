@@ -1,8 +1,6 @@
 package segmentedfilesystem;
 
 import java.io.*;
-import java.security.Key;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,7 +14,7 @@ public class ReceivedFile
     public ReceivedFile(int fileID)
     {
         this.fileID = fileID;
-        file = new TreeMap<Integer, byte[]>((Map<? extends Integer, ? extends byte[]>) new comparator());
+        file = new TreeMap<Integer, byte[]>();
     }
 
     public int getFileID()
@@ -52,16 +50,6 @@ public class ReceivedFile
         this.filename = filename;
     }
 
-    // Comparator to sort based on packet number
-    private static class comparator implements Comparator<DataPacket> {
-
-        @Override
-        public int compare(DataPacket p, DataPacket q)
-        {
-            return p.getPacketNumber() - q.getPacketNumber();
-        }
-
-    }
 
     public void createFile()
     {
@@ -72,6 +60,7 @@ public class ReceivedFile
                 {
                     out.write(k.getValue());
                 }
+                out.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
