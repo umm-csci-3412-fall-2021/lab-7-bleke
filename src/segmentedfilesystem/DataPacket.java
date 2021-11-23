@@ -43,8 +43,4 @@ public class DataPacket extends Packet
             isLastPacket = true;
     }
 
-    public boolean isLastPacket()
-    {
-        return isLastPacket;
-    }
 }

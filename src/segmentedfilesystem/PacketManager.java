@@ -35,6 +35,8 @@ public class PacketManager
         else
         {
             DataPacket dataPacket = new DataPacket(newPacket.getData(), newPacket.getPacketLength());
+            dataPacket.calculatePacketNumber();
+            dataPacket.setRestOfData();
             dataPacket.setLastPacket();
             sendPacketToFile(dataPacket);
         }

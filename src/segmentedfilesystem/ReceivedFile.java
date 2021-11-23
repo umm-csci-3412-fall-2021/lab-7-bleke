@@ -24,6 +24,14 @@ public class ReceivedFile
         return fileID;
     }
 
+    public boolean hasFilename()
+    {
+        if(filename != null)
+            return true;
+        else
+            return false;
+    }
+
     public void addPacket(DataPacket p)
     {
         file.put(p.getPacketNumber(), p.getRestOfData());
@@ -36,17 +44,12 @@ public class ReceivedFile
 
     public boolean isComplete()
     {
-        return file.size() == numberOfPackets;
+        return (file.size() == numberOfPackets) && hasFilename();
     }
 
     public void setFileName(String filename)
     {
         this.filename = filename;
-    }
-
-    public void showMap()
-    {
-        file.toString();
     }
 
     // Comparator to sort based on packet number
