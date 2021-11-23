@@ -59,6 +59,7 @@ public class ReceivedFile
                 for(Map.Entry<Integer, byte[]> k : file.entrySet())
                 {
                     out.write(k.getValue());
+                    out.flush();
                 }
                 out.close();
             } catch (FileNotFoundException e) {
