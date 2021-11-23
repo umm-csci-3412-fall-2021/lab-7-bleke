@@ -1,19 +1,22 @@
 package segmentedfilesystem;
 
-import java.util.ArrayList;
+import java.io.*;
+import java.security.Key;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class ReceivedFile
 {
     int fileID;
-    byte[] filename;
+    String filename;
     int numberOfPackets;
     TreeMap<Integer, byte[]> file;
 
     public void ReceivedFile(int fileID)
     {
         this.fileID = fileID;
-        file = new TreeMap<Integer, byte[]>();
+        file = new TreeMap<Integer, byte[]>((Map<? extends Integer, ? extends byte[]>) new comparator());
     }
 
     public int getFileID()
@@ -36,9 +39,41 @@ public class ReceivedFile
         return file.size() == numberOfPackets;
     }
 
-    public void setFileName(byte[] filename)
+    public void setFileName(String filename)
     {
         this.filename = filename;
     }
 
+    public void showMap()
+    {
+        file.toString();
+    }
+
+    // Comparator to sort based on packet number
+    private static class comparator implements Comparator<DataPacket> {
+
+        @Override
+        public int compare(DataPacket p, DataPacket q)
+        {
+            return p.getPacketNumber() - q.getPacketNumber();
+        }
+
+    }
+
+    public void createFile()
+    {
+        if(isComplete()) {
+            try{
+                FileOutputStream out = new FileOutputStream(filename);
+                for(Map.Entry<Integer, byte[]> k : file.entrySet())
+                {
+                    out.write(k.getValue());
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

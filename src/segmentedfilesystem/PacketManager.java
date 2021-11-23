@@ -50,20 +50,18 @@ public class PacketManager
                 // check to see if there's already a RecievedFile object with a
                 // given fileID, if there is, add the new packet to that file
             {
-                file.setFileName(p.getFileName());
+                file.setFileName(p.fileNameToString());
             }
             else
                 // if there is not an existing RecievedFile object with a given fileID,
                 // then create a new one.
             {
                 ReceivedFile newFile = new ReceivedFile();
-                newFile.setFileName(p.getFileName());
+                newFile.setFileName(p.fileNameToString());
                 receivedFiles.add(newFile);
             }
         }
     }
-
-
 
     public static void sendPacketToFile(DataPacket p)
     {

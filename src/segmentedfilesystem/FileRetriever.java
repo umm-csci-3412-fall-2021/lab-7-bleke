@@ -43,7 +43,7 @@ public class FileRetriever {
 
 			packet = new DatagramPacket(buf, buf.length);
 
-			while(true)  // need to change to stop when we receive all of the packets.
+			while(!complete())  // need to change to stop when we receive all of the packets.
 			{
 				datagramSocket.receive(packet);
 
@@ -53,6 +53,12 @@ public class FileRetriever {
 				newPacket.createPacket();
 			}
 
+			// once we've received all of the packets, create the files.
+			for (ReceivedFile file :
+				 PacketManager.receivedFiles) {
+				file.createFile();
+			}
+
 		} catch (SocketException e) {
 			e.printStackTrace();
 		} catch (UnknownHostException e) {
@@ -60,8 +66,22 @@ public class FileRetriever {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
+	private boolean complete()
+	{
+		int counter = 0;
+		for (ReceivedFile file :
+			 PacketManager.receivedFiles) {
+			if(file.isComplete())
+				counter++;
+		}
+		if(counter == 3)
+			return true;
+		else
+			return false;
+	}
 
 
 }
