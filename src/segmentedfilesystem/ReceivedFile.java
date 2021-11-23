@@ -13,7 +13,7 @@ public class ReceivedFile
     int numberOfPackets;
     TreeMap<Integer, byte[]> file;
 
-    public void ReceivedFile(int fileID)
+    public ReceivedFile(int fileID)
     {
         this.fileID = fileID;
         file = new TreeMap<Integer, byte[]>((Map<? extends Integer, ? extends byte[]>) new comparator());

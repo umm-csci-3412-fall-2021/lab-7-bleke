@@ -58,7 +58,7 @@ public class PacketManager
                 // if there is not an existing RecievedFile object with a given fileID,
                 // then create a new one.
             {
-                ReceivedFile newFile = new ReceivedFile();
+                ReceivedFile newFile = new ReceivedFile(fileID);
                 newFile.setFileName(p.fileNameToString());
                 receivedFiles.add(newFile);
             }
@@ -87,7 +87,7 @@ public class PacketManager
             // if there is not an existing RecievedFile object with a given fileID,
             // then create a new one.
             {
-                ReceivedFile newFile = new ReceivedFile();
+                ReceivedFile newFile = new ReceivedFile(fileID);
                 receivedFiles.add(newFile);
             }
         }
