@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class PacketManager
 {
     Packet newPacket;
-    static ArrayList<ReceivedFile> receivedFiles;
 
     // Constructor
     public PacketManager(DatagramPacket packet)
@@ -45,9 +44,9 @@ public class PacketManager
     public static void setReceivedFileName(HeaderPacket p)
     {
         int fileID = p.getFileID();
-        for(int i = 0; i < receivedFiles.size(); i++)
+        for(int i = 0; i < FileRetriever.receivedFiles.size(); i++)
         {
-            ReceivedFile file = receivedFiles.get(i);
+            ReceivedFile file = FileRetriever.receivedFiles.get(i);
             if(file.getFileID() == fileID)
                 // check to see if there's already a RecievedFile object with a
                 // given fileID, if there is, add the new packet to that file
@@ -60,7 +59,7 @@ public class PacketManager
             {
                 ReceivedFile newFile = new ReceivedFile(fileID);
                 newFile.setFileName(p.fileNameToString());
-                receivedFiles.add(newFile);
+                FileRetriever.receivedFiles.add(newFile);
             }
         }
     }
@@ -68,9 +67,9 @@ public class PacketManager
     public static void sendPacketToFile(DataPacket p)
     {
         int fileID = p.getFileID();
-        for(int i = 0; i < receivedFiles.size(); i++)
+        for(int i = 0; i < FileRetriever.receivedFiles.size(); i++)
         {
-            ReceivedFile file = receivedFiles.get(i);
+            ReceivedFile file = FileRetriever.receivedFiles.get(i);
             if(file.fileID == fileID)
             // check to see if there's already a RecievedFile object with a
             // given fileID, if there is, add the new packet to that file
@@ -88,7 +87,7 @@ public class PacketManager
             // then create a new one.
             {
                 ReceivedFile newFile = new ReceivedFile(fileID);
-                receivedFiles.add(newFile);
+                FileRetriever.receivedFiles.add(newFile);
             }
         }
     }
