@@ -1,72 +1,35 @@
 package segmentedfilesystem;
 
-import java.io.*;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class ReceivedFile
-{
-    int fileID;
-    String filename;
-    int numberOfPackets;
-    TreeMap<Integer, byte[]> file;
+public class ReceivedFile{
 
-    public ReceivedFile(int fileID)
-    {
-        this.fileID = fileID;
-        file = new TreeMap<Integer, byte[]>();
+    public TreeMap<Integer, Packet> files;
+    public int fileID;
+    private HeaderPacket headerPacket;
+    public int maxPackets;
+
+    public ReceivedFile(){
+        this.files = new TreeMap<Integer, Packet>();
     }
 
-    public int getFileID()
-    {
-        return fileID;
+    public void addPacket(HeaderPacket headerPacket) {
+        this.headerPacket = headerPacket;
     }
 
-    public boolean hasFilename()
-    {
-        if(filename != null)
-            return true;
-        else
+    public void addPacket(DataPacket dataPacket) {
+        this.files.put(dataPacket.packetNumber, dataPacket);
+    }
+
+    public HeaderPacket getHeaderPacket() {
+        return this.headerPacket;
+    }
+
+    public boolean allPacketsReceived(){
+        if(files.size() == 0) {
             return false;
-    }
-
-    public void addPacket(DataPacket p)
-    {
-        file.put(p.getPacketNumber(), p.getRestOfData());
-    }
-
-    public void setNumberOfPackets(int numberOfPackets)
-    {
-        this.numberOfPackets = numberOfPackets;
-    }
-
-    public boolean isComplete()
-    {
-        return (file.size() == numberOfPackets) && hasFilename();
-    }
-
-    public void setFileName(String filename)
-    {
-        this.filename = filename;
-    }
-
-
-    public void createFile()
-    {
-        if(isComplete()) {
-            try{
-                FileOutputStream out = new FileOutputStream(filename);
-                for(Map.Entry<Integer, byte[]> k : file.entrySet())
-                {
-                    out.write(k.getValue());
-                    out.flush();
-                }
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
+        return this.maxPackets == this.files.size();
     }
 }

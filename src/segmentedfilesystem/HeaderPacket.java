@@ -1,21 +1,20 @@
 package segmentedfilesystem;
 
-import java.nio.charset.StandardCharsets;
+import java.net.DatagramPacket;
 import java.util.Arrays;
 
-public class HeaderPacket extends Packet
-{
-    String fileNameString;
+public class HeaderPacket extends Packet{
 
-    public HeaderPacket(byte[] data, int packetLength) {
-        super(data, packetLength);
+    String fileName;
+
+    public HeaderPacket(DatagramPacket packet){
+        super(packet);
+        int nameLength = packet.getLength();
+        byte[] byteName = Arrays.copyOfRange(data, 2, nameLength);
+        fileName = new String(byteName);
     }
 
-    byte[] fileName = Arrays.copyOfRange(data, 2, packetLength);
-
-    public String fileNameToString()
-    {
-        fileNameString = new String(fileName, StandardCharsets.UTF_8);
-        return fileNameString;
+    public String getFileName(){
+        return this.fileName;
     }
 }

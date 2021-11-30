@@ -1,36 +1,28 @@
 package segmentedfilesystem;
 
-public class Packet
-{
+import java.net.DatagramPacket;
+
+public class Packet{
+
+    public int statusByte;
+    public int fileID;
     byte[] data;
-    boolean isHeader;
-    byte fileID;
-    int packetLength;
 
-    // Constructor
-    public Packet(byte[] data, int packetLength) {
-        this.data = data;
-        this.packetLength = packetLength;
-    }
-
-    public byte getFileID()
-    {
+    public Packet(DatagramPacket packet){
+        data = packet.getData();
+        statusByte = data[0];
         fileID = data[1];
-        return fileID;
     }
 
-    public boolean isHeader()
-    {
-        return isHeader;
-    }
-    
-    public int getPacketLength()
-    {
-        return packetLength;
+    public int getFileID(){
+        return this.fileID;
     }
 
-    public byte[] getData()
-    {
-        return data;
+    public int getStatus(){
+        return this.statusByte % 2;
+    }
+
+    public boolean isHeader(){
+        return this.getStatus() == 0;
     }
 }

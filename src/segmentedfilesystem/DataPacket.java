@@ -1,46 +1,32 @@
+
 package segmentedfilesystem;
 
+import java.net.DatagramPacket;
 import java.util.Arrays;
 
-public class DataPacket extends Packet
-{
-    int packetNumber;
-    boolean isLastPacket;
-    byte[] restOfData;  // bytes that are not the status, fileID, or packetNumber
+public class DataPacket extends Packet{
 
-    public DataPacket(byte[] data, int packetLength) {
-        super(data, packetLength);
+    public byte[] packetNum;
+    public int packetNumber;
+
+    public DataPacket(DatagramPacket packet) {
+        super(packet);
+        int nameLength = packet.getLength();
+        packetNumber = getPacketNumber();
+        data = Arrays.copyOfRange(packet.getData(), 4, nameLength);
     }
 
-    public void calculatePacketNumber()
-    {
-        int x = data[2];  // most significant byte
-        int y = data[3];  // least significant byte
-
-        if(x < 0)
-            x += 256;
-        if(y < 0)
-            y += 256;
-
-        packetNumber = (256 * x) + y;
+    public byte[] getData() {
+        return this.data;
     }
 
-    public int getPacketNumber()
-    {
-        return packetNumber;
+    public boolean isLastPacket() {
+        return this.statusByte % 4 == 3;
     }
 
-    public void setRestOfData()
-    {
-        restOfData = Arrays.copyOfRange(data, 4, packetLength);
+    public int getPacketNumber() {
+        int part1 = Byte.toUnsignedInt(data[2]);
+        int part2 = Byte.toUnsignedInt(data[3]);
+        return 256 * part1 + part2;
     }
-
-    public byte[] getRestOfData() { return restOfData;}
-
-    public void setLastPacket()
-    {
-        if(data[0] % 4 == 3)  // might have to use Byte.toUnassignedInt
-            isLastPacket = true;
-    }
-
 }

@@ -1,25 +1,123 @@
 package segmentedfilesystem;
 
-import java.io.*;
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
 
 public class FileRetriever {
 
-	String server;
-	int portNumber;
+	private static InetAddress serverName;
+	private static int portNum;
 	private static FileOutputStream output;
-	static ArrayList<ReceivedFile> receivedFiles;
+	DatagramPacket packet;
+	DatagramSocket socket = null;
+	private static byte[] buf;
+	public static ArrayList<ReceivedFile> receivedFiles = new ArrayList<>();
+	HeaderPacket head;
+	DataPacket data;
+	int completeFiles = 0;
+	ReceivedFile newFile;
+	boolean IDFound;
+
 
 	public FileRetriever(String server, int port) {
 		// Save the server and port for use in `downloadFiles()`
 		//...
-		this.server = server;
-		this.portNumber = port;
-		receivedFiles = new ArrayList<ReceivedFile>();
+		try {
+			serverName = InetAddress.getByName(server);
+		}catch(UnknownHostException e) {
+			System.out.println(e);
+		}
+		portNum = port;
 	}
 
 	public void downloadFiles() {
+
+		try {
+			socket = new DatagramSocket();
+			// send.connect(serverName, portNum);
+			// socket = new DatagramSocket(portNum);
+
+			buf = new byte[1028];
+			DatagramPacket request = new DatagramPacket(buf, buf.length, serverName, portNum);
+			socket.send(request);
+		} catch(SocketException e) {
+			System.out.println(e);
+		} catch(IOException e) {
+			System.out.println(e);
+		}
+
+		//runs as long as all of the maps arent full
+		do{
+			//counts how many of the maps are full
+			for(ReceivedFile received : receivedFiles) {
+				if(received.allPacketsReceived()) completeFiles++;
+			}
+
+			try{
+				packet = new DatagramPacket(buf, buf.length);
+				socket.receive(packet);
+			} catch(IOException e){
+				System.out.println("There was an unexpected error.");
+			}
+			Packet incomingPacket = new Packet(packet);
+
+			boolean isHead = incomingPacket.isHeader();
+
+			if(isHead) {
+				head = new HeaderPacket(packet);
+			} else {
+				data = new DataPacket(packet);
+			}
+			for(ReceivedFile received : receivedFiles) {
+				if(received.fileID == incomingPacket.fileID) {
+
+					if(isHead) {
+						received.addPacket(head);
+					} else {
+						received.addPacket(data);
+						if(data.packetNumber > received.maxPackets) {
+							received.maxPackets = data.packetNumber;
+						}
+					}
+					IDFound = true;
+					if(data.isLastPacket() || incomingPacket.statusByte == 3){
+						received.maxPackets = data.packetNumber;
+					}
+					break;
+				} else {
+					IDFound = false;
+				}
+			}
+			if(!IDFound) {
+				newFile = new ReceivedFile();
+				receivedFiles.add(newFile);
+				if(isHead) {
+					newFile.addPacket(head);
+				} else {
+					newFile.addPacket(data);
+				}
+				newFile.fileID = incomingPacket.fileID;
+			}
+
+			if(receivedFiles.size() == 0) {
+				newFile = new ReceivedFile();
+				if(isHead) {
+					newFile.addPacket(head);
+				} else {
+					newFile.addPacket(data);
+				}
+				receivedFiles.add(newFile);
+				newFile.fileID = incomingPacket.fileID;
+			}
+		} while(completeFiles != receivedFiles.size());
+
 		// Do all the heavy lifting here.
 		// This should
 		//   * Connect to the server
@@ -32,68 +130,20 @@ public class FileRetriever {
 		// PacketManager.allPacketsReceived() that you could
 		// call for that, but there are a bunch of possible
 		// ways.
-		try {
-			InetAddress address = InetAddress.getByName(server);
-			DatagramSocket datagramSocket = new DatagramSocket(portNumber, address);
 
-			byte[] buf = new byte[1028];
-
-			// create and send empty packet to initiate exchange
-			DatagramPacket packet = new DatagramPacket(buf, buf.length, address, portNumber);
-			datagramSocket.send(packet);
-
-			packet = new DatagramPacket(buf, buf.length);
-
-			while(!complete())  // need to change to stop when we receive all of the packets.
-			{
-				datagramSocket.receive(packet);
-
-				PacketManager newPacket = new PacketManager(packet);
-
-				newPacket.setStatus();
-				newPacket.createPacket();
-			}
-
-			// once we've received all of the packets, create the files.
-			for (ReceivedFile file :
-					receivedFiles) {
-				file.createFile();
-			}
-
-		} catch (SocketException e) {
-			e.printStackTrace();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	private boolean complete()
-	{
-		int counter = 0;
-		for (ReceivedFile file :
-				receivedFiles) {
-			if(file.isComplete())
-				counter++;
-		}
-		if(counter == 3)
-			return true;
-		else
-			return false;
 	}
 
 	public static void writeToFiles() throws IOException, FileNotFoundException {
 		for(ReceivedFile received : receivedFiles) {
 			//creates an output stream with the given file name
-			output = new FileOutputStream(new File(received.filename));
+			output = new FileOutputStream(received.getHeaderPacket().fileName);
 			//goes through each packet and writes the data
-			for(int i = 0; i < received.file.size(); i++) {
-				byte[] currentData = received.file.get(i);
-				output.write(currentData);
+			for(int i = 0; i < received.files.size(); i++) {
+				Packet currentPacket = received.files.get(i);
+				output.write(currentPacket.data);
 			}
 		}
 		output.close();
 	}
+
 }
