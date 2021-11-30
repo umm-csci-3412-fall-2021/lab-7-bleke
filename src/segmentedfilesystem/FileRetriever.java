@@ -82,13 +82,13 @@ public class FileRetriever {
 						received.addPacket(head);
 					} else {
 						received.addPacket(data);
-						if(data.packetNumber > received.maxPackets) {
-							received.maxPackets = data.packetNumber;
+						if(data.packetNumber > received.numberOfPackets) {
+							received.numberOfPackets = data.packetNumber;
 						}
 					}
 					IDFound = true;
 					if(data.isLastPacket() || incomingPacket.statusByte == 3){
-						received.maxPackets = data.packetNumber;
+						received.numberOfPackets = data.packetNumber;
 					}
 					break;
 				} else {

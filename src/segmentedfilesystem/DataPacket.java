@@ -25,8 +25,8 @@ public class DataPacket extends Packet{
     }
 
     public int getPacketNumber() {
-        int part1 = Byte.toUnsignedInt(data[2]);
-        int part2 = Byte.toUnsignedInt(data[3]);
-        return 256 * part1 + part2;
+        int x = Byte.toUnsignedInt(data[2]);
+        int y = Byte.toUnsignedInt(data[3]);
+        return 256 * x + y;
     }
 }

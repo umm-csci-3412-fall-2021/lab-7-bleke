@@ -8,7 +8,7 @@ public class ReceivedFile{
     public TreeMap<Integer, Packet> files;
     public int fileID;
     private HeaderPacket headerPacket;
-    public int maxPackets;
+    public int numberOfPackets;
 
     public ReceivedFile(){
         this.files = new TreeMap<Integer, Packet>();
@@ -30,6 +30,6 @@ public class ReceivedFile{
         if(files.size() == 0) {
             return false;
         }
-        return this.maxPackets == this.files.size();
+        return this.numberOfPackets == this.files.size();
     }
 }
